@@ -1,0 +1,16 @@
+# Étape 1 : seule la DB tourne dans Docker
+# L'app tourne directement avec : java -jar app.jar --spring.profiles.active=prod
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: myrecipedb
+      POSTGRES_USER: ${DB_USER:-sa}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sa -d myrecipedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
