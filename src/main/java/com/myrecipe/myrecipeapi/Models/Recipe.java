@@ -1,5 +1,6 @@
 package com.myrecipe.myrecipeapi.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -40,6 +41,7 @@ public class Recipe {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"recipes", "password"})
     private AppUser author;
 
     @PrePersist
