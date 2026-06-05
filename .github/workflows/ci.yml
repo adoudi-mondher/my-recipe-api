@@ -30,3 +30,12 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw clean package -DskipTests
+
+      - name: Package application
+        run: ./mvnw clean package
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: myrecipe-api-jar
+          path: target/*.jar
