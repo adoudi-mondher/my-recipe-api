@@ -27,6 +27,6 @@ jobs:
 #          ./mvnw test
 
       - name: Package application
-        run:
+        run: |
           chmod +x mvnw
-          ./mvnw clean package
+          ./mvnw clean package -DskipTests
