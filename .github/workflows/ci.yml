@@ -83,12 +83,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: myrecipe-api-jar
+          path: target/
+
       - name: Créer le fichier .env
         run: |
           echo "DB_USER=${{ secrets.DB_USER }}" > .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
       - name: Déployer la stack
-        run: |
-          docker compose pull || true
-          docker compose up -d --build
+        run: docker compose up -d --build
