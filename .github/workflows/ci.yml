@@ -76,19 +76,19 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/myrecipe-api:${{ github.sha }}
 
   deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, vm-deploy]
     needs: docker-push
 
     steps:
-      - name: Deploy on server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myrecipe-api:${{ github.sha }}
-            docker stop myrecipe-api || true
-            docker rm myrecipe-api || true
-            docker compose up -d
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Créer le fichier .env
+        run: |
+          echo "DB_USER=${{ secrets.DB_USER }}" > .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
+      - name: Déployer la stack
+        run: |
+          docker compose pull || true
+          docker compose up -d --build
